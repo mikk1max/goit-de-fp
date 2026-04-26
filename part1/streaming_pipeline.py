@@ -32,9 +32,9 @@ MYSQL_OUTPUT_TABLE = "shepeta_athlete_enriched_agg"
 KAFKA_OPTS = {
     "kafka.bootstrap.servers": KAFKA_BOOTSTRAP,
     "kafka.security.protocol": "SASL_PLAINTEXT",
-    "kafka.sasl.mechanism": "SCRAM-SHA-512",
+    "kafka.sasl.mechanism": "PLAIN",
     "kafka.sasl.jaas.config": (
-        'org.apache.kafka.common.security.scram.ScramLoginModule required '
+        'org.apache.kafka.common.security.plain.PlainLoginModule required '
         f'username="{KAFKA_USERNAME}" password="{KAFKA_PASSWORD}";'
     ),
 }
