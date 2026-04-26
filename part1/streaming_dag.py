@@ -24,7 +24,8 @@ with DAG(
         task_id="streaming_pipeline",
         bash_command=(
             f"spark-submit --master local[2] "
-            f"--packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.2 "
+            f"--packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.2,"
+            f"mysql:mysql-connector-java:8.0.33 "
             f"{os.path.join(DAG_DIR, 'streaming_pipeline.py')}"
         ),
     )
