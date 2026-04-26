@@ -10,7 +10,7 @@ import os
 from datetime import datetime
 
 from airflow import DAG
-from airflow.operators.bash import BashOperator
+from airflow.providers.apache.spark.operators.spark_submit import SparkSubmitOperator
 
 DAG_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -20,24 +20,41 @@ with DAG(
     schedule_interval=None,
     catchup=False,
     max_active_runs=1,
-    max_active_tasks=1,
     tags=["final_project", "datalake", "spark", "shepeta"],
     description="Multi-hop Data Lake: landing → bronze → silver → gold",
 ) as dag:
 
-    landing_to_bronze = BashOperator(
+    landing_to_bronze = SparkSubmitOperator(
         task_id="landing_to_bronze",
-        bash_command=f"spark-submit {os.path.join(DAG_DIR, 'landing_to_bronze.py')}",
+        application=os.path.join(DAG_DIR, "landing_to_bronze.py"),
+        conn_id="spark-default",
+        driver_memory="512m",
+        executor_memory="512m",
+        executor_cores=1,
+        total_executor_cores=1,
+        verbose=True,
     )
 
-    bronze_to_silver = BashOperator(
+    bronze_to_silver = SparkSubmitOperator(
         task_id="bronze_to_silver",
-        bash_command=f"spark-submit {os.path.join(DAG_DIR, 'bronze_to_silver.py')}",
+        application=os.path.join(DAG_DIR, "bronze_to_silver.py"),
+        conn_id="spark-default",
+        driver_memory="512m",
+        executor_memory="512m",
+        executor_cores=1,
+        total_executor_cores=1,
+        verbose=True,
     )
 
-    silver_to_gold = BashOperator(
+    silver_to_gold = SparkSubmitOperator(
         task_id="silver_to_gold",
-        bash_command=f"spark-submit {os.path.join(DAG_DIR, 'silver_to_gold.py')}",
+        application=os.path.join(DAG_DIR, "silver_to_gold.py"),
+        conn_id="spark-default",
+        driver_memory="512m",
+        executor_memory="512m",
+        executor_cores=1,
+        total_executor_cores=1,
+        verbose=True,
     )
 
     landing_to_bronze >> bronze_to_silver >> silver_to_gold
